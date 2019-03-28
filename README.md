@@ -309,6 +309,7 @@ Easy peasy! RAILS MAGIC!
 Now it's your turn. Try using the steps that we followed above to build out the controller, actions, and views for your users' posts.
 
 
+Stuck? Here's a solution: https://git.generalassemb.ly/wdi-nyc-bananas/rails_from_scratch_101_solution
 
 
 
