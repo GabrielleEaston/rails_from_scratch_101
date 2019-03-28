@@ -77,9 +77,24 @@ class User < ApplicationRecord
 end
 ```
 
-Awesome! We've got our User and Post models, and we've set the one-to-many relationship between them. Let's make some routes!
+Awesome! We've got our User and Post models, and we've set the one-to-many relationship between them. Let's add some data!
 
-## Setting Routes
+## Setting Seed Data
+Now that we've got these siiiiiiick models, let's seed some data into our app. Copy the content from the `seeds.rb` file *from this Github repository* and paste it in the `seeds.rb` file *in your app*. 
+
+Save your `seeds.rb` file, go to your terminal, and type the following command: `rails db:seed`
+
+Let's open up our rails console and check out our seed data. You can do this by typing `rails console` or `rails c` in your terminal. In the past, you've used raw SQL or Sequelize to query a database. In Rails, we use [Active Record](https://git.generalassemb.ly/wdi-nyc-bananas/LECTURE_U04_D06_Active-Record-101).
+
+Let's try some basic Active Record queries to search our database.
+ - `User.all`
+ - `User.find(id:1)`
+ - `Post.all`
+ - `Post.where(user_id: 1)`
+ 
+ Cool! Looks like things are working. Let's keep moving.
+
+## Writing Routes
 Navigate to the `config` folder and open `routes.rb`. You can set all of your CRUD routes with the following code:
 
 ```
@@ -110,18 +125,18 @@ end
 Great! Let's add some methods aka "actions" to our new classes.
 
 # Adding Actions
-The methods in our classes are going to line up with our app's CRUD actions. Before we write these, let's take a look at [Active Record](https://git.generalassemb.ly/wdi-nyc-bananas/LECTURE_U04_D06_Active-Record-101).
+The methods in our classes are going to line up with our app's CRUD actions. We'll be applying our Active Record queries here to make sure that the correct data is pulled from our database at each CRUD action. If you need a refresher, take another look at [Active Record](https://git.generalassemb.ly/wdi-nyc-bananas/LECTURE_U04_D06_Active-Record-101).
 
 Cool, now that we're familiar with Active Record syntax, let's open up our `users_controller.rb` file, add our actions, and assign our instance variables:
 
 ```
 class UsersController
   def index
-    @users = User.all // this is the same as SELECT * FROM user;
+    @users = User.all
   end
   
   def show
-    @user = User.find(params[:id]) // this is the same as SELECT * FROM user WHERE id = params[:id]
+    @user = User.find(params[:id]) 
   end
   
   def new
@@ -181,6 +196,8 @@ The `.erb` part makes this a special HTML document that will allow us to inject 
 ```
 
 Basically, when you want to inject Ruby code, you wrap the code with `<% %>`. Some people think these look like fish and call them "flounders". If you want the output of the Ruby code to be visible on the page, add an equals sign to the first one, like this: `<%= %>`. People like to call the ones with equals signs "squids." Coders... we're a weird bunch. :)
+
+Before we keep going, let's deploy our app to a local server and see if all this stuff is working. To do so, return to your terminal and type `rails server` or `rails s`, then go to your web browser and open `http://localhost:3000/users`.
 
 
 
