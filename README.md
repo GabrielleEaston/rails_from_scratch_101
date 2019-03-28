@@ -189,9 +189,9 @@ Add a folder inside the `views` folder called `users`. Inside of that folder, yo
 The `.erb` part makes this a special HTML document that will allow us to inject Ruby code into our page. Let's start with our index page. Let's try it out! Open your `index.html.erb` page and enter the following code:
 
 ```
+<h2>List of Users</h2>
 <% @users.each do |user| %>
   <p><%= user.name %><p>
-  <p><%= user.bio %></p>
 <% end %>
 ```
 
@@ -199,6 +199,40 @@ Basically, when you want to inject Ruby code, you wrap the code with `<% %>`. So
 
 Before we keep going, let's deploy our app to a local server and see if all this stuff is working. To do so, return to your terminal and type `rails server` or `rails s`, then go to your web browser and open `http://localhost:3000/users`.
 
+Looks good! Let's continue by making the rest of our CRUD views. Our `new` and `edit` views will require us to use forms. We could write these in regular HTML, but they'd be pretty complicated with form authenticity tokens. Luckily Rails gives us a much easier way to write forms. We'll dive deeper into forms later in this course, but in the meantime, you can learn more about them in this [Forms and Partials](https://git.generalassemb.ly/wdi-nyc-bananas/rails-form-helpers-partials-lesson) lesson.
+
+#### show.html.erb
+```
+<h2><%= @user.name %></h2>
+<p><%= @user.bio %></p>
+```
+
+#### new.html.erb
+```
+<%= form_for @user do |f| %>
+  <%= f.text_field :name, placeholder: "Name" %>
+  <%= f.text_area :bio, placeholder: "Bio" %>
+  <%= f.password :password, placeholder: "Password" %>
+  <%= f.submit "Submit"%>
+<% end %>
+```
+
+#### edit.html.erb
+```
+<%= form_for @user do |f| %>
+  <%= f.text_field :name, placeholder: "Name" %>
+  <%= f.text_area :bio, placeholder: "Bio" %>
+  <%= f.password :password, placeholder: "Password" %>
+  <%= f.submit "Submit"%>
+<% end %>
+```
+
+Good work. Now go back to the browser and give all these pages a try. We haven't added links yet, so you'll have to manually type in the URLS (fill in the `:id` with the actual id number you're looking for):
+-`/users/:id`
+-`/users/new`
+-`/users/:id/edit`
+
+Try creating and editing a new user. Great work! You've made a basic CRUD app in Rails!
 
 
 
