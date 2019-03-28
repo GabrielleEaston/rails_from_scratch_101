@@ -235,9 +235,9 @@ Looks good! Let's continue by making the rest of our CRUD views. Our `new` and `
 ```
 
 Good work. Now go back to the browser and give all these pages a try. We haven't added links between our views yet, so you'll have to manually type in the URLS (fill in the `:id` with the actual id number you're looking for):
--`/users/:id`
--`/users/new`
--`/users/:id/edit`
+- `/users/:id`
+- `/users/new`
+- `/users/:id/edit`
 
 Try creating and editing a new user. Great work! You've made a basic CRUD app in Rails!
 
