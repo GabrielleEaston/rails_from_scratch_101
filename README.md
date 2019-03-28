@@ -85,7 +85,7 @@ end
 Awesome! We've got our User and Post models, and we've set the one-to-many relationship between them. Let's add some data!
 
 ## Setting Seed Data
-Now that we've got these siiiiiiick models, let's seed some data into our app. Copy the content from the `seeds.rb` file *from this Github repository* and paste it in the `seeds.rb` file *in your app*. 
+Now that we've got these siiiiiiick models, let's seed some data into our app. Copy the content from the `seeds.rb` file *from this Github repository* and paste it in the `seeds.rb` file *in your app*. You can find this file in your `db` folder.
 
 Save your `seeds.rb` file, go to your terminal, and type the following command: `rails db:seed`
 
@@ -108,6 +108,8 @@ resources :users do
 end
 ```
 
+We've nested posts inside of users so that our routes reflect the fact that posts belong to a user. The resulting urls will follow a format of `/users/:id/posts/:id`
+
 Save the file, go back to your terminal, and write `rails routes`. This will allow you to see all the routes your app now has available. On the right-most column, you'll see the controllers and actions for these routes. Let's set those up.
 
 ## Creating Controllers
@@ -116,13 +118,13 @@ Navigate to the `app` folder and open the `controllers` folder. You need to crea
 In each of these folders, you'll be making a ruby class that inherits from Application Controller:
 
 ```
-class UsersController
+class UsersController < ApplicationController
 
 end
 ```
 
 ```
-class PostsController
+class PostsController < ApplicationController
 
 end
 ```
