@@ -61,7 +61,11 @@ If everything looks good, go back to the terminal and type `rails db:migrate`. O
 
 Looking at your file / folder structure again, you should see that a new file has appeared: `schema.rb`. Click on this and take a look at the tables that have been generated for your User and Post models. Thanks Rails!
 
-Next, open the `app` folder and navigate to the `models` folder. Open `post.rb` and make sure you see the following code:
+## More Model Stuff!
+
+To help our `password_digest` field work correctly, let's take a moment to add the `bcrypt` gem to our file. Thankfully, Rails already knows we'll probably want this, so all we have to do is go to the `Gemfile` and find `bcrypt`. It should currently be commented out. Simply uncomment it. Then, go to the terminal and type `bundle install`. This command re-installs the gems in your gemfile, so bcrypt will now be added. 
+
+Next, open the `app` folder and navigate to the `models` folder. Open `post.rb` and add the following code (some of it may have been added already by default). The `has_secure_password` line in our User model makes sure that our bcrypt gem works:
 
 ```
 class Post < ApplicationRecord
@@ -73,6 +77,7 @@ Now open `user.rb` and update it so that it says:
 
 ```
 class User < ApplicationRecord
+  has_secure_password
   has_many :posts
 end
 ```
@@ -156,7 +161,7 @@ class UsersController
   
   def update
     @user = User.find(params[:id])
-    if @user.update_attributes
+    if @user.update_attributes(user_params)
       redirect_to @user
     end
   end
@@ -209,31 +214,37 @@ Looks good! Let's continue by making the rest of our CRUD views. Our `new` and `
 
 #### new.html.erb
 ```
+<h2>Create New User</h2>
 <%= form_for @user do |f| %>
   <%= f.text_field :name, placeholder: "Name" %>
   <%= f.text_area :bio, placeholder: "Bio" %>
-  <%= f.password :password, placeholder: "Password" %>
+  <%= f.password_field :password, placeholder: "Password" %>
   <%= f.submit "Submit"%>
 <% end %>
 ```
 
 #### edit.html.erb
 ```
+<h2>Edit <%= @user.name %></h2>
 <%= form_for @user do |f| %>
   <%= f.text_field :name, placeholder: "Name" %>
   <%= f.text_area :bio, placeholder: "Bio" %>
-  <%= f.password :password, placeholder: "Password" %>
+  <%= f.password_field :password, placeholder: "Password" %>
   <%= f.submit "Submit"%>
 <% end %>
 ```
 
-Good work. Now go back to the browser and give all these pages a try. We haven't added links yet, so you'll have to manually type in the URLS (fill in the `:id` with the actual id number you're looking for):
+Good work. Now go back to the browser and give all these pages a try. We haven't added links between our views yet, so you'll have to manually type in the URLS (fill in the `:id` with the actual id number you're looking for):
 -`/users/:id`
 -`/users/new`
 -`/users/:id/edit`
 
 Try creating and editing a new user. Great work! You've made a basic CRUD app in Rails!
 
+## Let's Polish This Turd
+There's still a lot we need to add before the User parts of our app are ready:
+- Links between our views
+- Reducing the redundancy of our New and Edit forms with partials
 
 
 
