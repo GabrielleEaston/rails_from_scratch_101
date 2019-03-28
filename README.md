@@ -290,7 +290,25 @@ And finally, let's add a link to our New page that brings us back to the user In
 <p><%= link_to "Users List", users_path %>
 ```
 
-Awesome! Open your app in the browser and enjoy your newfound ability to easily hop from page to page. Yay!
+Awesome! Open your app in the browser and enjoy your newfound ability to easily hop from page to page. Yay! 
+
+## Partials Party
+Take a look at our edit and new views. That form looks pretty similar, right? Let's abstract it out into a PARTIAL!
+
+We're going to make a new file, `_form.html.erb`, within the `views/users` directory. Then, we're going to take the copy the form that's currently in our new and edit views, and we're going to paste it here.
+
+Then, delete the form from your edit and new pages and replace it with the following:
+
+```
+<%= render partial: 'form'%>
+```
+
+Easy peasy! RAILS MAGIC!
+
+# You Do - Build out the Post controller and views
+Now it's your turn. Try using the steps that we followed above to build out the controller, actions, and views for your users' posts.
+
+
 
 
 
