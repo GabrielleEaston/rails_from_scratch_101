@@ -93,7 +93,7 @@ Let's open up our rails console and check out our seed data. You can do this by 
 
 Let's try some basic Active Record queries to search our database.
  - `User.all`
- - `User.find(id:1)`
+ - `User.find(1)`
  - `Post.all`
  - `Post.where(user_id: 1)`
  
