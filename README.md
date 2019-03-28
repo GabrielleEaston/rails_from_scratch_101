@@ -78,9 +78,10 @@ Now open `user.rb` and update it so that it says:
 ```
 class User < ApplicationRecord
   has_secure_password
-  has_many :posts
+  has_many :posts, dependent: :destroy
 end
 ```
+The line `dependent: destroy` means that when a user is deleted, the posts that they own will also be deleted. 
 
 Awesome! We've got our User and Post models, and we've set the one-to-many relationship between them. Let's add some data!
 
@@ -214,6 +215,15 @@ Looks good! Let's continue by making the rest of our CRUD views. Our `new` and `
 <p><%= @user.bio %></p>
 ```
 
+The show page is usually where we delete users, so let's add a form that connects to our destroy action. You can write this beneath the code you just added:
+```
+<%= form_for @user, html: {method: "delete"} do |f| %>
+  <%= f.submit "Delete #{@user.name}" %>
+<% end %>
+```
+
+Great, now that you can delete a user, we better make sure you can add one, too!
+
 #### new.html.erb
 ```
 <h2>Create New User</h2>
@@ -243,13 +253,44 @@ Good work. Now go back to the browser and give all these pages a try. We haven't
 
 Try creating and editing a new user. Great work! You've made a basic CRUD app in Rails!
 
-## Let's Polish This Turd
-There's still a lot we need to add before the User parts of our app are ready:
-- Links between our views
-- Reducing the redundancy of our New and Edit forms with partials
+## Let's Link Up
+We have a CRUD app, but we have to manually enter any URL that we want to go to. Let's fix that. Rails has a built in feature called `link_to` that makes routing about our app a little easier. Check out the [`link_to` section of the Rails docs](https://apidock.com/rails/ActionView/Helpers/UrlHelper/link_to) for more examples.
 
+First, let's update our `index.html.erb` file so that each name in our user list links to the show page of that user.
+```
+<h2>List of Users</h2>
+<% @users.each do |user| %>
+  <%= link_to user.name, user %>
+<% end %>
+```
 
+Beneath that, let's also add a link to our new user page. We'll add a horizontal rule above this new link just to separate it from our list:
+```
+<hr>
+<p><%= link_to "Create New User", new_user_path %></p>
+```
 
+Great! Now, let's move to our show page and, beneath the code that we've already written, add a link that allows us to return to our index page:
+```
+<p><%= link_to "Users List", users_path %></p>
+```
+
+Cool! Let's also add a link to our our edit page:
+```
+<p><%= link_to "Edit", edit_user_path %></p>
+```
+
+Next, let's add a link to our Edit page that returns to the show page of the user:
+```
+<p><%= link_to @user.name, @user %></p>
+```
+
+And finally, let's add a link to our New page that brings us back to the user Index page:
+```
+<p><%= link_to "Users List", users_path %>
+```
+
+Awesome! Open your app in the browser and enjoy your newfound ability to easily hop from page to page. Yay!
 
 
 
