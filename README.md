@@ -112,7 +112,7 @@ Great! Let's add some methods aka "actions" to our new classes.
 # Adding Actions
 The methods in our classes are going to line up with our app's CRUD actions. Before we write these, let's take a look at [Active Record](https://git.generalassemb.ly/wdi-nyc-bananas/LECTURE_U04_D06_Active-Record-101).
 
-Cool, now that we're familiar with Active Record syntax, let's add our actions and assign our instance variables:
+Cool, now that we're familiar with Active Record syntax, let's open up our `users_controller.rb` file, add our actions, and assign our instance variables:
 
 ```
 class UsersController
@@ -159,6 +159,28 @@ class UsersController
   end
 end
 ```
+Great! We'll need to follow a very similar pattern for our `posts_controller.rb` file. We'll get to that in a few minutes, but first, let's add some views so we can see this app in action.
+
+## Very First View
+
+So we have a database ready to go, and we have our model and controllers set up to ensure the correct data comes into and out of our app. Now we need a place to visualize that data. Let's set up some views for our User model!
+
+Add a folder inside the `views` folder called `users`. Inside of that folder, you'll need to create 4 files:
+- `index.html.erb`
+- `show.html.erb`
+- `new.html.erb`
+- `edit.html.erb`
+
+The `.erb` part makes this a special HTML document that will allow us to inject Ruby code into our page. Let's start with our index page. Let's try it out! Open your `index.html.erb` page and enter the following code:
+
+```
+<% @users.each do |user| %>
+  <p><%= user.name %><p>
+  <p><%= user.bio %></p>
+<% end %>
+```
+
+Basically, when you want to inject Ruby code, you wrap the code with `<% %>`. Some people think these look like fish and call them "flounders". If you want the output of the Ruby code to be visible on the page, add an equals sign to the first one, like this: `<%= %>`. People like to call the ones with equals signs "squids." Coders... we're a weird bunch. :)
 
 
 
