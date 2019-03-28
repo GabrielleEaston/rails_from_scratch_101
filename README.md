@@ -91,6 +91,77 @@ end
 Save the file, go back to your terminal, and write `rails routes`. This will allow you to see all the routes your app now has available. On the right-most column, you'll see the controllers and actions for these routes. Let's set those up.
 
 ## Creating Controllers
+Navigate to the `app` folder and open the `controllers` folder. You need to create 2 new files for this folder: `users_controller.rb` and `posts_controller.rb`
+
+In each of these folders, you'll be making a ruby class that inherits from Application Controller:
+
+```
+class UsersController
+
+end
+```
+
+```
+class PostsController
+
+end
+```
+
+Great! Let's add some methods aka "actions" to our new classes.
+
+# Adding Actions
+The methods in our classes are going to line up with our app's CRUD actions. Before we write these, let's take a look at [Active Record](https://git.generalassemb.ly/wdi-nyc-bananas/LECTURE_U04_D06_Active-Record-101).
+
+Cool, now that we're familiar with Active Record syntax, let's add our actions and assign our instance variables:
+
+```
+class UsersController
+  def index
+    @users = User.all // this is the same as SELECT * FROM user;
+  end
+  
+  def show
+    @user = User.find(params[:id]) // this is the same as SELECT * FROM user WHERE id = params[:id]
+  end
+  
+  def new
+    @user = User.new
+  end
+  
+  def create
+    @user = User.new(user_params)
+    if @user.save
+      redirect_to @user
+     end
+  end
+  
+  def edit
+    @user = User.find(params[:id])
+  end
+  
+  def update
+    @user = User.find(params[:id])
+    if @user.update_attributes
+      redirect_to @user
+    end
+  end
+  
+  def destroy
+    @user = User.find(params[:id])
+    @user.destroy
+    redirect_to users_path
+  end
+  
+  private
+
+  def user_params
+    params.require(:user).permit(:name, :bio, :password)
+  end
+end
+```
+
+
+
 
 
 
