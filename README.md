@@ -308,8 +308,12 @@ Easy peasy! RAILS MAGIC!
 # You Do - Build out the Post controller and views
 Now it's your turn. Try using the steps that we followed above to build out the controller, actions, and views for your users' posts.
 
+>Hint: Because posts are nested inside of users, you'll need to write your `form_for`s and `link_to`s a little differently. 
 
-Stuck? Here's a solution: https://git.generalassemb.ly/wdi-nyc-bananas/rails_from_scratch_101_solution
+...`form_for [@user, @post]`...
+
+`<%= link_to "Post List", user_posts_path(@user) %>`
+
 
 
 
