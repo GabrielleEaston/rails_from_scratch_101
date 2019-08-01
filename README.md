@@ -314,6 +314,8 @@ Now it's your turn. Try using the steps that we followed above to build out the 
 
 `<%= link_to "Post List", user_posts_path(@user) %>`
 
+[This blog post](https://ryanbigg.com/2018/12/polymorphic-routes) has more details about writing forms and links for nested resources.
+
 
 
 
