@@ -122,7 +122,7 @@ rails g model Category topic post:references
 
 Now, if we check our files, we'll see that a model was created, as well as a migration file. Since we have a new migration, let check the file. If it looks good, let's run our migration with `rails db:migrate`.
 
-We now have several model files located in `/app/models`. Right now,they are empty. We can fill those in with validations and associations. We have foreign reference keys in our tables but we still need to add rules in our model so that Rails know which tables are associated. Let's start with the User model.
+We now have several model files located in `/app/models`. Right now, they are empty. We can fill those in with validations and associations. We have foreign reference keys in our tables but we still need to add rules in our model so that Rails know which tables are associated. Let's start with the User model.
 
 ```rb
 class User < ApplicationRecord
@@ -133,7 +133,7 @@ end
 
 ```
 
-We have a few things going one here. First is some validations on the username. It has to be unique and cant be `nil`. Find more options for validations in the docs: [rails validations](https://guides.rubyonrails.org/active_record_validations.html). We have also set some associations. On our associations we have set the paired entry in the child table to be deleted when the parent user is deleted. Since these associations are bi-directional, we also need to define the corresponding association in the other models.
+We have a few things going one here. First is some validations on the username. It has to be unique and can't be `nil`. Find more options for validations in the docs: [rails validations](https://guides.rubyonrails.org/active_record_validations.html). We have also set some associations. On our associations we have set the paired entry in the child table to be deleted when the parent user is deleted. Since these associations are bi-directional, we also need to define the corresponding association in the other models.
 ```rb
 class Post < ApplicationRecord
   belongs_to :user
