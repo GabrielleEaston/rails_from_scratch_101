@@ -104,27 +104,25 @@ Once you've completed this exercise, let's talk about how this went. Were there 
 
 ## Models
 
-We need to create a model for any table that we want to access in our controllers. We can also use a rails generator to create our models for us as well. One syntax difference here though is that our models are going to be singular as opposed to plural like in the migrations: `rails g User`. By default, Rails will also generate a migration along with our models. We can simply pass the same options for our table columns after the model name. (yes, we could have done this instead of making our previous migrations. Typically that's how it's done but some extra practice doesn't hurt).
+We need to create a model for any table that we want to access in our controllers. We can also use a Rails generator to create our models for us as well. One syntax difference here though is that our models are going to be singular as opposed to plural like in the migrations: `rails g model User`. By default, Rails will also generate a migration along with our models. We can simply pass the same options for our table columns after the model name. (yes, we could have done this instead of making our previous migrations. Typically that's how it's done but some extra practice doesn't hurt).
 
 ```shell
-rails g User --skip-migration
-rails g Post --skip-migration
-rails g Comment --skip-migration
-
+rails g model User --skip-migration
+rails g model Post --skip-migration
+rails g model Comment --skip-migration
 ```
 
-Normally we can skip the `--skip-migration` flag on this command.
+Normally, we won't use the `--skip-migration` flag on this command, but we've already generated our migrations for these models.
 
 Let's make a categories model for our app but include options for a migration file as well.
 
 ```shell
-rails g Category topic post:references
-
+rails g model Category topic post:references
 ```
 
-Now we can check out files and see that a model was created as well as a migration file. Since we have a new migration so let's migrate check the file and if it looks good, let's run our migration again with `rails db:migrate`.
+Now, if we check our files, we'll see that a model was created, as well as a migration file. Since we have a new migration, let check the file. If it looks good, let's run our migration with `rails db:migrate`.
 
-We now have several model files located in `/app/models`. Right now they are empty. We can fill those in with validations and associations. We have foreign reference keys in our tables but we still need to add rules in our model so that Rails know which tables are associated. Let's start with the User model.
+We now have several model files located in `/app/models`. Right now,they are empty. We can fill those in with validations and associations. We have foreign reference keys in our tables but we still need to add rules in our model so that Rails know which tables are associated. Let's start with the User model.
 
 ```rb
 class User < ApplicationRecord
@@ -136,7 +134,6 @@ end
 ```
 
 We have a few things going one here. First is some validations on the username. It has to be unique and cant be `nil`. Find more options for validations in the docs: [rails validations](https://guides.rubyonrails.org/active_record_validations.html). We have also set some associations. On our associations we have set the paired entry in the child table to be deleted when the parent user is deleted. Since these associations are bi-directional, we also need to define the corresponding association in the other models.
-
 ```rb
 class Post < ApplicationRecord
   belongs_to :user
@@ -144,20 +141,20 @@ end
 
 ```
 
-Take not of how the `has_many :posts` is plural and the `belongs_to` is singular
+Take note of how the `has_many :posts` association is plural and the `belongs_to :user` association is singular.
 
-# You do
+# You Do
 
 On your own, finish setting up the model files.
 
-1. Add any missing associations.
+1. Add any missing associations (check your migration files for a hint).
 
 2. Also, take a look at the validations available to us in the docs and pick out one to add to one of the models.
 
 
 ## Routes
 
-So far, We've spent a lot of time on the "M" in "MVC". Since React will take care of our view, the only piece we haven't talked about is the controllers. For this, we will actually start with our routes. We can find our `routes.rb` file in `/config/`. Here we can define what routes that we want for our server. Since we are now up to 4 tables that probably all would need full CRUD, we have a lot of routes to define. Luckily for us, Rails provides us with some tools to make this easy for us. It can even handle associations for us. Let's fill in our routes file with this: 
+So far, We've spent a lot of time on the "M" in "MVC". Since React will take care of our view, the only piece we haven't talked about is the controllers. For this, we will actually start with our routes. We can find our `routes.rb` file in `/config/`. Here, we can define which routes we want for our server. Since we are now up to 4 tables that probably all would need full CRUD, we have a lot of routes to define. Luckily for us, Rails provides us with some tools to make this easy for us. It can even handle associations for us. Let's fill in our routes file with this: 
 
 ```rb
 Rails.application.routes.draw do
@@ -173,8 +170,6 @@ end
 
 If we ever want to check what our routes are, we can run the CLI command `rails routes`. Running that now will return something like this:
 
-![](./rails_routes.png)
-
 We are only concerned about the area highlighted in red. Here we can see some of the Rails magic at work. We have all of the conventional routes made for us. Each column here is labeled at the top.
 - We can ignore the "prefix" column as that is mostly used for server side rendering which we're not doing.
 - Then we see the "Verb" column which is all of the HTTP methods for each route.
@@ -183,7 +178,7 @@ We are only concerned about the area highlighted in red. Here we can see some of
 
 ## Controllers
 
-Typically our controller methods is where we would access our database and return data. For this, we will need the Ruby ORM, ActiveRecord. We will be covering ActiveRecord in another lesson. For now, let's go over some of the other pieces of controllers.
+Typically, our controller methods are where we access our database and return data. For this, we will need the Ruby ORM, ActiveRecord. We will be covering ActiveRecord in another lesson. For now, let's go over some of the other pieces of controllers.
 
 ### Method Actions
 
@@ -201,13 +196,13 @@ Example:
 
 ```rb
 def update
-	puts "the id in the path is #{params[:id]}"
-	puts "the username in the request body is #{params[:username]}"
+  puts "the id in the path is #{params[:id]}"
+  puts "the username in the request body is #{params[:username]}"
 end
 
 ```
 
-### response
+### Response
 
 We can send a response from our controller methods by calling `render` followed by `json:` for a json response.
 
@@ -215,14 +210,14 @@ Example:
 
 ```rb
 def show
-	@database_users = [{name: "Soleil"}, {name: "Joe"}, {name: "David"}]
-	@user = @database_users.find{ |user| user.name == params[:name]}
+  @database_users = [{name: "Soleil"}, {name: "Joe"}, {name: "David"}]
+  @user = @database_users.find{ |user| user.name == params[:name]}
 	
-	render json: @user
+  render json: @user
 end	
 
 ```
 
 # You Do
 
-On your own, fill out the "create" method in the "users_controller.rb". Inside the method, you will be recreating the "rock, paper, scissors" algo. You can get the players choices from the params and render the winner as the response. When you're ready to test, start your API with the CLI command `rails server` and use insomnia to send a request.
+On your own, fill out the "create" method in the "users_controller.rb". Inside the method, you will be recreating the "rock, paper, scissors" algo. You can get the players choices from the params and render the winner as the response. When you're ready to test, start your API with the CLI command `rails server` and use Insomnia to send a request.
