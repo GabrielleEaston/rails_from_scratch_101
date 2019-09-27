@@ -225,4 +225,4 @@ end
 
 # You Do
 
-On your own, make fill out the "create" method in the "users
+On your own, fill out the "create" method in the "users_controller.rb". Inside the method, you will be recreating the "rock, paper, scissors" algo. You can get the players choices from the params and render the winner as the response. When you're ready to test, start your API with the CLI command `rails server` and use insomnia to send a request.
