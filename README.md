@@ -98,9 +98,10 @@ The schema file represents what our database looks like currently. We can always
 
 At this point we should have a "users" table. On your own, try to make two new migrations.
 
-1. Make a migration that creates a "posts" table. The table should have a `content` column that is a `string`, as well as a reference key to the "users" table. You can do this by adding `user:references` to the CLI command (`rails g migration etc.`).
-2. Make a migration that creates a "comments" table. This table should also have `content` with a type of `string`, and should reference both the "users" table and the "posts" table.
-3. Once you're happy with the way that they look, migrate your files.
+1. First make an ERD for how the table assocaitions should looks. You can simply draw one out on your desk.
+2. Make a migration that creates a "posts" table. The table should have a `content` column that is a `string`, as well as a reference key to the "users" table. You can do this by adding `user:references` to the CLI command (`rails g migration etc.`).
+3. Make a migration that creates a "comments" table. This table should also have `content` with a type of `string`, and should reference both the "users" table and the "posts" table.
+4. Once you're happy with the way that they look, migrate your files.
 
 Once you've completed this exercise, let's talk about how this went. Were there any issues that you ran into? Did the commands work the way that you expected them to?
 
