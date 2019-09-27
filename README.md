@@ -26,8 +26,8 @@ Take a moment to create a Rails app by following the above instructions, so we c
 
 Let's take a look at the directory contents—there's a lot here but luckily, most of these files don't need to be touched at all. We will primarily be working in four spots in this file structure:
 
-<!--![](./rails_directory.png)
--->
+![](./rails_directory.png)
+
 The directory names highlighted in the image above should conceptually look familiar. We will go over these four directories more in depth over the next week but for now, let's take a brief overview of them. In Rails, our controllers and routes are defined separately, and our models and database are defined separately. 
 
 > So how is the functionality split up with these files?
@@ -58,12 +58,12 @@ rails generate migration CreateUsers username age:integer is_admin:boolean
 
 This will make a new file in `/db/migrate`:
 
-<!--![](./new_migration.png)
--->
+![](./new_migration.png)
+
 Our new file looks like this:
 
-<!--![](./migration_file.png)
--->
+![](./migration_file.png)
+
 We can see that the command automatically filled in the migration with items that resemble what we put into our command line. Once we `CreateUsers`, it is defined as a class with the same name. We also have a `change` method defined here that runs `create_table`. Inside of the do/end block, we see lines that resemble our columns. This migration is now ready to go, and we can use it to modify our database.
 
 > But how did Rails know how make our migration file?
@@ -88,8 +88,8 @@ rails db:migrate
 
 This will run all of our migration files that haven't been previously run. Since this is our first migration, we will see a new file in our `/db/` directory.
 
-<!--![](./schema_file.png)
--->
+![](./schema_file.png)
+
 The schema file represents what our database looks like currently. We can always refer back here to see how our tables are currently set up.
 
 # You Do
