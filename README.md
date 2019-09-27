@@ -26,8 +26,8 @@ Take a moment to create a Rails app by following the above instructions, so we c
 
 Let's take a look at the directory contents—there's a lot here but luckily, most of these files don't need to be touched at all. We will primarily be working in four spots in this file structure:
 
-![](./rails_directory.png)
-
+<!--![](./rails_directory.png)
+-->
 The directory names highlighted in the image above should conceptually look familiar. We will go over these four directories more in depth over the next week but for now, let's take a brief overview of them. In Rails, our controllers and routes are defined separately, and our models and database are defined separately. 
 
 > So how is the functionality split up with these files?
@@ -58,12 +58,12 @@ rails generate migration CreateUsers username age:integer is_admin:boolean
 
 This will make a new file in `/db/migrate`:
 
-![](./new_migration.png)
-
+<!--![](./new_migration.png)
+-->
 Our new file looks like this:
 
-![](./migration_file.png)
-
+<!--![](./migration_file.png)
+-->
 We can see that the command automatically filled in the migration with items that resemble what we put into our command line. Once we `CreateUsers`, it is defined as a class with the same name. We also have a `change` method defined here that runs `create_table`. Inside of the do/end block, we see lines that resemble our columns. This migration is now ready to go, and we can use it to modify our database.
 
 > But how did Rails know how make our migration file?
@@ -88,8 +88,8 @@ rails db:migrate
 
 This will run all of our migration files that haven't been previously run. Since this is our first migration, we will see a new file in our `/db/` directory.
 
-![](./schema_file.png)
-
+<!--![](./schema_file.png)
+-->
 The schema file represents what our database looks like currently. We can always refer back here to see how our tables are currently set up.
 
 # You Do
@@ -102,93 +102,83 @@ At this point we should have a "users" table. On your own, try to make two new m
 
 Once you've completed this exercise, let's talk about how this went. Were there any issues that you ran into? Did the commands work the way that you expected them to?
 
+## Models
 
-## break
-## break
-## break
+We need to create a model for any table that we want to access in our controllers. We can also use a rails generator to create our models for us as well. One syntax difference here though is that our models are going to be singular as opposed to plural like in the migrations: `rails g User`. By default, Rails will also generate a migration along with our models. We can simply pass the same options for our table columns after the model name. (yes, we could have done this instead of making our previous migrations. Typically that's how it's done but some extra practice doesn't hurt).
 
-
-## Makin' Models
-Our app will have two models: User and Post. Users will have many posts, and each post will belong to a user. Let's start by generating our User model. In your terminal, write the following:
-
-`rails g model User name bio:text`
-
-Now, let's generate our Post model:
-
-`rails g model Post title body:text user:references`
-
-Great! Open your Rails app in your text editor, navigate to the `db` folder, and open the `migrate` folder within. There should be two files in the `migrate` folder. The file names should have a timestamp, then the words `create_users.rb` and `create_posts.rb`. Make sure that the code within looks relatively similar to the following, and make any changes that you need to make now:
+```shell
+rails g User --skip-migration
+rails g Post --skip-migration
+rails g Comment --skip-migration
 
 ```
-class CreateUsers < ActiveRecord::Migration[5.2]
-  def change
-    create_table :users do |t|
-      t.string :name
-      t.text :bio
-      t.string :password_digest
 
-      t.timestamps
-    end
-  end
+Normally we can skip the `--skip-migration` flag on this command.
+
+Let's make a categories model for our app but include options for a migration file as well.
+
+```shell
+rails g Category topic post:references
+
+```
+
+Now we can check out files and see that a model was created as well as a migration file. Since we have a new migration so let's migrate check the file and if it looks good, let's run our migration again with `rails db:migrate`.
+
+We now have several model files located in `/app/models`. Right now they are empty. We can fill those in with validations and associations. We have foreign reference keys in our tables but we still need to add rules in our model so that Rails know which tables are associated. Let's start with the User model.
+
+```rb
+class User < ApplicationRecord
+  validates :username, uniqueness: true, presence: true
+  has_many :posts, dependent: :destroy
+  has_many :comments, dependent: :destroy
 end
-```
 
 ```
-class CreatePosts < ActiveRecord::Migration[5.2]
-  def change
-    create_table :posts do |t|
-      t.string :title
-      t.text :body
-      t.references :user, foreign_key: true
 
-      t.timestamps
-    end
-  end
-end
-```
+We have a few things going one here. First is some validations on the username. It has to be unique and cant be `nil`. Find more options for validations in the docs: [rails validations](https://guides.rubyonrails.org/active_record_validations.html). We have also set some associations. On our associations we have set the paired entry in the child table to be deleted when the parent user is deleted. Since these associations are bi-directional, we also need to define the corresponding association in the other models.
 
-If everything looks good, go back to the terminal and type `rails db:migrate`. Once you have completed this step, DO NOT edit these migration files again. If you want to change your models in the future, it's better practice to make a new migration that updates your models rather than trying to change these original migrations.
-
-Looking at your file / folder structure again, you should see that a new file has appeared: `schema.rb`. Click on this and take a look at the tables that have been generated for your User and Post models. Thanks Rails!
-
-## More Model Stuff!
-
-To help our `password_digest` field work correctly, let's take a moment to add the `bcrypt` gem to our file. Thankfully, Rails already knows we'll probably want this, so all we have to do is go to the `Gemfile` and find `bcrypt`. It should currently be commented out. Simply uncomment it. Then, go to the terminal and type `bundle install`. This command re-installs the gems in your gemfile, so bcrypt will now be added. 
-
-Next, open the `app` folder and navigate to the `models` folder. Open `post.rb` and add the following code (some of it may have been added already by default). The `has_secure_password` line in our User model makes sure that our bcrypt gem works:
-
-```
+```rb
 class Post < ApplicationRecord
   belongs_to :user
 end
-```
-
-Now open `user.rb` and update it so that it says:
 
 ```
-class User < ApplicationRecord
-  has_secure_password
-  has_many :posts, dependent: :destroy
+
+Take not of how the `has_many :posts` is plural and the `belongs_to` is singular
+
+# You do
+
+On your own, finish setting up the model files.
+
+1. Add any missing associations.
+
+2. Also, take a look at the validations available to us in the docs and pick out one to add to one of the models.
+
+
+## Routes/Associations
+
+So far, We've spent a lot of time on the "M" in "MVC". Since React will take care of our view, the only piece we haven't talked about is the controllers. For this, we will actually start with our routes. We can find our `routes.rb` file in `/config/`. Here we can define what routes that we want for our server. Since we are now up to 4 tables that probably all would need full CRUD, we have a lot of routes to define. Luckily for us, Rails provides us with some tools to make this easy for us. It can even handle associations for us. Let's fill in our routes file with this: 
+
+```rb
+Rails.application.routes.draw do
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  resources :users do
+    resources :posts
+    resources :comments
+  end
+  resources :categories
 end
+
 ```
-The line `dependent: destroy` means that when a user is deleted, the posts that they own will also be deleted. 
 
-Awesome! We've got our User and Post models, and we've set the one-to-many relationship between them. Let's add some data!
+If we ever want to check what our routes are, we can run the CLI command `rails routes`. Running that now will return something like this:
 
-## Setting Seed Data
-Now that we've got these siiiiiiick models, let's seed some data into our app. Copy the content from the `seeds.rb` file *from this Github repository* and paste it in the `seeds.rb` file *in your app*. You can find this file in your `db` folder.
+![](./rails_routes.png)
 
-Save your `seeds.rb` file, go to your terminal, and type the following command: `rails db:seed`
+## break
+## break
+## break
 
-Let's open up our rails console and check out our seed data. You can do this by typing `rails console` or `rails c` in your terminal. In the past, you've used raw SQL or Sequelize to query a database. In Rails, we use Active Record.
-
-Let's try some basic Active Record queries to search our database.
- - `User.all`
- - `User.find(1)`
- - `Post.all`
- - `Post.where(user_id: 1)`
- 
- Cool! Looks like things are working. Let's keep moving.
 
 ## Writing Routes
 Navigate to the `config` folder and open `routes.rb`. You can set all of your CRUD routes with the following code:
