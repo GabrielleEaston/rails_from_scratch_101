@@ -155,7 +155,7 @@ On your own, finish setting up the model files.
 2. Also, take a look at the validations available to us in the docs and pick out one to add to one of the models.
 
 
-## Routes/Associations
+## Routes
 
 So far, We've spent a lot of time on the "M" in "MVC". Since React will take care of our view, the only piece we haven't talked about is the controllers. For this, we will actually start with our routes. We can find our `routes.rb` file in `/config/`. Here we can define what routes that we want for our server. Since we are now up to 4 tables that probably all would need full CRUD, we have a lot of routes to define. Luckily for us, Rails provides us with some tools to make this easy for us. It can even handle associations for us. Let's fill in our routes file with this: 
 
@@ -175,227 +175,54 @@ If we ever want to check what our routes are, we can run the CLI command `rails 
 
 ![](./rails_routes.png)
 
-## break
-## break
-## break
+We are only concerned about the area highlighted in red. Here we can see some of the Rails magic at work. We have all of the conventional routes made for us. Each column here is labeled at the top.
+- We can ignore the "prefix" column as that is mostly used for server side rendering which we're not doing.
+- Then we see the "Verb" column which is all of the HTTP methods for each route.
+- We have our paths under the "URI Pattern" column.
+- Lastly the "Controller#Action" column shows which controller Rails will route the requests to and the method that it will call.
 
+## Controllers
 
-## Writing Routes
-Navigate to the `config` folder and open `routes.rb`. You can set all of your CRUD routes with the following code:
+Typically our controller methods is where we would access our database and return data. For this, we will need the Ruby ORM, ActiveRecord. We will be covering ActiveRecord in another lesson. For now, let's go over some of the other pieces of controllers.
 
-```
-resources :users do
-  resources :posts
+### Method Actions
+
+- Index: This is for our "find all" route. Find all of the table entries and return them.
+- Show: This is for our "find one" route. Find one entry from this table that matches the :id sent in the params.
+- Create: Make a new entry in our table using the request body params.
+- Update: Find an entry using the :id and update it using the request body.
+- Destroy: Find the entry and delete it.
+
+### Params
+
+We can at any time access a param from either our path or our request body by calling `params[:key_name]`
+
+Example: 
+
+```rb
+def update
+	puts "the id in the path is #{params[:id]}"
+	puts "the username in the request body is #{params[:username]}"
 end
-```
-
-We've nested posts inside of users so that our routes reflect the fact that posts belong to a user. The resulting urls will follow a format of `/users/:id/posts/:id`
-
-Save the file, go back to your terminal, and write `rails routes`. This will allow you to see all the routes your app now has available. On the right-most column, you'll see the controllers and actions for these routes. Let's set those up.
-
-## Creating Controllers
-Navigate to the `app` folder and open the `controllers` folder. You need to create 2 new files for this folder: `users_controller.rb` and `posts_controller.rb`
-
-In each of these folders, you'll be making a ruby class that inherits from Application Controller:
 
 ```
-class UsersController < ApplicationController
 
-end
-```
+### response
 
-```
-class PostsController < ApplicationController
+We can send a response from our controller methods by calling `render` followed by `json:` for a json response.
 
-end
-```
+Example:
 
-Great! Let's add some methods aka "actions" to our new classes.
-
-## Adding Actions
-The methods in our classes are going to line up with our app's CRUD actions. We'll be applying our Active Record queries here to make sure that the correct data is pulled from our database at each CRUD action. If you need a refresher, take another look at [Active Record](https://git.generalassemb.ly/wdi-nyc-bananas/LECTURE_U04_D06_Active-Record-101).
-
-Cool, now that we're familiar with Active Record syntax, let's open up our `users_controller.rb` file, add our actions, and assign our instance variables:
+```rb
+def show
+	@database_users = [{name: "Soleil"}, {name: "Joe"}, {name: "David"}]
+	@user = @database_users.find{ |user| user.name == params[:name]}
+	
+	render json: @user
+end	
 
 ```
-class UsersController
-  def index
-    @users = User.all
-  end
-  
-  def show
-    @user = User.find(params[:id]) 
-  end
-  
-  def new
-    @user = User.new
-  end
-  
-  def create
-    @user = User.new(user_params)
-    if @user.save
-      redirect_to @user
-     end
-  end
-  
-  def edit
-    @user = User.find(params[:id])
-  end
-  
-  def update
-    @user = User.find(params[:id])
-    if @user.update_attributes(user_params)
-      redirect_to @user
-    end
-  end
-  
-  def destroy
-    @user = User.find(params[:id])
-    @user.destroy
-    redirect_to users_path
-  end
-  
-  private
 
-  def user_params
-    params.require(:user).permit(:name, :bio, :password)
-  end
-end
-```
-Great! We'll need to follow a very similar pattern for our `posts_controller.rb` file. We'll get to that in a few minutes, but first, let's add some views so we can see this app in action.
+# You Do
 
-## Very First View
-
-So we have a database ready to go, and we have our model and controllers set up to ensure the correct data comes into and out of our app. Now we need a place to visualize that data. Let's set up some views for our User model!
-
-Add a folder inside the `views` folder called `users`. Inside of that folder, you'll need to create 4 files:
-- `index.html.erb`
-- `show.html.erb`
-- `new.html.erb`
-- `edit.html.erb`
-
-The `.erb` part makes this a special HTML document that will allow us to inject Ruby code into our page. Let's start with our index page. Let's try it out! Open your `index.html.erb` page and enter the following code:
-
-```
-<h2>List of Users</h2>
-<% @users.each do |user| %>
-  <p><%= user.name %><p>
-<% end %>
-```
-
-Basically, when you want to inject Ruby code, you wrap the code with `<% %>`. Some people think these look like fish and call them "flounders". If you want the output of the Ruby code to be visible on the page, add an equals sign to the first one, like this: `<%= %>`. People like to call the ones with equals signs "squids." Coders... we're a weird bunch. :)
-
-Before we keep going, let's deploy our app to a local server and see if all this stuff is working. To do so, return to your terminal and type `rails server` or `rails s`, then go to your web browser and open `http://localhost:3000/users`.
-
-Looks good! Let's continue by making the rest of our CRUD views. Our `new` and `edit` views will require us to use forms. We could write these in regular HTML, but they'd be pretty complicated with form authenticity tokens. Luckily Rails gives us a much easier way to write forms. We'll dive deeper into forms later in this course, but in the meantime, you can learn more about them in this [Forms and Partials](https://git.generalassemb.ly/wdi-nyc-bananas/rails-form-helpers-partials-lesson) lesson.
-
-#### show.html.erb
-```
-<h2><%= @user.name %></h2>
-<p><%= @user.bio %></p>
-```
-
-The show page is usually where we delete users, so let's add a form that connects to our destroy action. You can write this beneath the code you just added:
-```
-<%= form_for @user, html: {method: "delete"} do |f| %>
-  <%= f.submit "Delete #{@user.name}" %>
-<% end %>
-```
-
-Great, now that you can delete a user, we better make sure you can add one, too!
-
-#### new.html.erb
-```
-<h2>Create New User</h2>
-<%= form_for @user do |f| %>
-  <%= f.text_field :name, placeholder: "Name" %>
-  <%= f.text_area :bio, placeholder: "Bio" %>
-  <%= f.password_field :password, placeholder: "Password" %>
-  <%= f.submit "Submit"%>
-<% end %>
-```
-
-#### edit.html.erb
-```
-<h2>Edit <%= @user.name %></h2>
-<%= form_for @user do |f| %>
-  <%= f.text_field :name, placeholder: "Name" %>
-  <%= f.text_area :bio, placeholder: "Bio" %>
-  <%= f.password_field :password, placeholder: "Password" %>
-  <%= f.submit "Submit"%>
-<% end %>
-```
-
-Good work. Now go back to the browser and give all these pages a try. We haven't added links between our views yet, so you'll have to manually type in the URLS (fill in the `:id` with the actual id number you're looking for):
-- `/users/:id`
-- `/users/new`
-- `/users/:id/edit`
-
-Try creating and editing a new user. Great work! You've made a basic CRUD app in Rails!
-
-## Let's Link Up
-We have a CRUD app, but we have to manually enter any URL that we want to go to. Let's fix that. Rails has a built in feature called `link_to` that makes routing about our app a little easier. Check out the [`link_to` section of the Rails docs](https://apidock.com/rails/ActionView/Helpers/UrlHelper/link_to) for more examples.
-
-First, let's update our `index.html.erb` file so that each name in our user list links to the show page of that user.
-```
-<h2>List of Users</h2>
-<% @users.each do |user| %>
-  <%= link_to user.name, user %>
-<% end %>
-```
-
-Beneath that, let's also add a link to our new user page. We'll add a horizontal rule above this new link just to separate it from our list:
-```
-<hr>
-<p><%= link_to "Create New User", new_user_path %></p>
-```
-
-Great! Now, let's move to our show page and, beneath the code that we've already written, add a link that allows us to return to our index page:
-```
-<p><%= link_to "Users List", users_path %></p>
-```
-
-Cool! Let's also add a link to our our edit page:
-```
-<p><%= link_to "Edit", edit_user_path %></p>
-```
-
-Next, let's add a link to our Edit page that returns to the show page of the user:
-```
-<p><%= link_to @user.name, @user %></p>
-```
-
-And finally, let's add a link to our New page that brings us back to the user Index page:
-```
-<p><%= link_to "Users List", users_path %>
-```
-
-Awesome! Open your app in the browser and enjoy your newfound ability to easily hop from page to page. Yay! 
-
-## Partials Party
-Take a look at our edit and new views. That form looks pretty similar, right? Let's abstract it out into a PARTIAL!
-
-We're going to make a new file, `_form.html.erb`, within the `views/users` directory. Then, we're going to take the copy the form that's currently in our new and edit views, and we're going to paste it here.
-
-Then, delete the form from your edit and new pages and replace it with the following:
-
-```
-<%= render partial: 'form'%>
-```
-
-Easy peasy! RAILS MAGIC!
-
-# You Do - Build out the Post controller and views
-Now it's your turn. Try using the steps that we followed above to build out the controller, actions, and views for your users' posts.
-
->Hint: Because posts are nested inside of users, you'll need to write your `form_for`s and `link_to`s a little differently. 
-
-...`form_for [@user, @post]`...
-
-`<%= link_to "Post List", user_posts_path(@user) %>`
-
-[This blog post](https://ryanbigg.com/2018/12/polymorphic-routes) has more details about writing forms and links for nested resources.
-
-
-
-
+On your own, make fill out the "create" method in the "users
