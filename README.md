@@ -38,7 +38,7 @@ This separation results in user requests being processed as follows:
 3) The controller gives the retrieved data to the view.
 4) The view is rendered and sent back to the client for the browser to display.
 
-<img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2017/10/1508423394rails-revealed_mvc-diagram.png" width="600px">
+![](MVC-control-flow.png)
 
 Rails can either be built with views, or it can be built as a pure API without views (in which case the views would be handled by a separate front end application, like a React app). We'll be focusing on the later.
 
